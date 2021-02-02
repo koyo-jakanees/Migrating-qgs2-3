@@ -1,17 +1,17 @@
 # Introduction
 
-Why would one be interested in porting an old QGIS2 plugin to QGIS3? Spin up a new plugin? Use the improved processing framework models for that given workflow
+Why would one be interested in porting an old QGIS2 plugin to QGIS3? Spin up a new plugin? Use the improved processing framework models for that given workflow?
 
 Before beginning such a journey the need to do so must have risen either from  a clients request, or the functionality provided by such a
 plugin is still not available natively in qgis3 core or core plugins. Maybe the  plugin was used to access a private rest api service.
 
 From personal experience I have encountered some organizations still using qgis2.18 because of a custom plugin that was developed for them to suit their
-daily workflow and is only compatible with v2 API. For instance the [Surveying Calculation plugin](https://github.com/zsiki/ls) that was developed by DigiKom and Zanzibar local authorities was developed for v2  to aid in survey and traverse/triangulation network calculation, adjustments and reductions. It has seen less or rather inactive development and is not supported by v3 api or the [OpenAerialMap Plugin](https://github.com/hotosm/oam-qgis-plugin) by HOTOSM to access and upload imagery from the open Aerial map platform
+daily workflow and is only compatible with v2 API. For instance the [Surveying Calculation plugin](https://github.com/zsiki/ls) that was developed by DigiKom and Zanzibar local authorities was developed for v2  to aid in survey and traverse/triangulation network calculation, adjustments and reductions. It has seen less or rather inactive development and is not supported by v3 api or the [OpenAerialMap Plugin](https://github.com/hotosm/oam-qgis-plugin) by HOTOSM to access and upload imagery from the open Aerial map platform, unfortunately the development was halted and is not maintained at the moment.
 
-such  plugins could have been part of your daily workflow pipelines as an individual or an org as a whole. So would you rather stick to legacy qgis version or upgrade to feature rich and improved user experience v3 offers. With plugins one could play around with some of the semi-automated tools to port your plugin of choice
+Such  plugins could have been part of your daily workflow pipelines as an individual or an org as a whole. So would you rather stick to legacy qgis version or upgrade to feature rich and improved user experience v3 offers. With plugins one could play around with some of the semi-automated tools to port your plugin of choice
 if it is no longer/does not support qgis3.
 
-Since the release of QGIS v3 the community have tried to come with guides to help plugin developers to port their code to this version and a few best practices.
+Since the release of QGIS v3 the community has tried to come with guides to help plugin developers to port their code to this version and a few best practices.
 
 QGIS itself being written in ```C++```, ```Qt framework``` and ```Python``` as the main scripting language. There's been myriads of changes within the  ```QT Framework```  official deprecation of  ``Qt4`` to ``Qt5``  and   ```python2``` *End of life* and  support early 2020 to ```python3``` which is the programming language used to develop plugins and custom scripts in QGIS.
 
