@@ -34,8 +34,7 @@ Options:
                         .py3 files.
 ```
 
-The tool works both with directories and individual files.
-Invoking or calling the porting help from your terminal or OSGeo4W shell in your plugin folder.
+The tool works both with directories and individual files. Invoking or calling the porting help from your terminal or OSGeo4W shell in your plugin folder.
 
 ```bash
 $qgis2to3 -w /path/plugin/folder
@@ -85,8 +84,8 @@ RefactoringTool: Refactored /home/user/Documents/osGeoLive/salientrobot-dev/oam-
 ```
 
 The ``-w`` option tells the tool to write back the modified files. You'll notice that the tool also adds some python built-in modules e.g ```from __future__ import print_function```
-Don't be scared this comes about when refactoring ``py2`` to ``py3`` code.
+Don't be scared, this comes about when refactoring ``py2`` to ``py3`` code.
 
-This function will also ``stdout`` the changes the tool made to each file in ``git style`` indicating the changed lines from which v2 api to which corresponding v3 api.
-At this point if the imports and porting worked out fine you should be able to load the plugin widgets and controls to the ```QgsInterface``` instance/session.
-Next steps involves refactoring the api v2 used that the tool could not find quick fix {Mainly QGIS api which makes the logic/control of the plugin}. Unfortunately this is the boring part and requires a little bit of patience,  don't be hard on yourself you have reached this far.
+This function will also ``stdout`` the changes the tool made to each file in ``git style`` indicating the changed lines from which v2 API to which corresponding v3 API.
+At this point, if the imports and porting worked out fine you should be able to load the plugin widgets and controls to the ```QgsInterface``` instance/session.
+The next steps involve refactoring the API v2 used that the tool could not find a quick fix {Mainly QGIS API which makes the logic/control of the plugin}. Unfortunately, this is the boring part and requires a little bit of patience, don't be hard on yourself you have reached this far.
