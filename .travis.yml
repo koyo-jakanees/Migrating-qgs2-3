@@ -14,13 +14,13 @@ before_script:
   - cargo install-update -a
 
 script:
-  - mdbook build ./book && mdbook test ./book
+  - mdbook build $PWD && mdbook test PWD
 
 deploy:
   provider: pages
   skip-cleanup: true
   github-token: $GITHUB_TOKEN
-  local-dir: ./book
+  local-dir: $PWD
   keep-history: false
   on:
     branch: master
