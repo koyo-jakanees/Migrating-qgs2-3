@@ -1,5 +1,6 @@
 language: rust
-sudo: false
+os: linux
+dist: xenial
 
 cache:
   - cargo
@@ -23,3 +24,4 @@ deploy:
   keep-history: false
   on:
     branch: master
+  target_branch: gh-pages
