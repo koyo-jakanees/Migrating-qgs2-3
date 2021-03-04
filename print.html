@@ -1,0 +1,444 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Migrating Legacy QGIS2 plugins to v3 API</title>
+        
+        <meta name="robots" content="noindex" />
+        
+        
+
+
+        <!-- Custom HTML head -->
+        
+
+
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        
+        <link rel="stylesheet" href="fonts/fonts.css">
+        
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+
+        
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="Introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">Getting Started</li><li class="chapter-item expanded "><a href="QGIS3Porting.html"><strong aria-hidden="true">2.</strong> Getting the tools</a></li><li class="chapter-item expanded "><a href="Unit_test.html"><strong aria-hidden="true">3.</strong> Including Tests</a></li><li class="chapter-item expanded "><a href="Versioning_strategy.html"><strong aria-hidden="true">4.</strong> Source code Versioning</a></li><li class="chapter-item expanded affix "><li class="part-title">Refactoring the source code</li><li class="chapter-item expanded "><a href="Fixing_imports.html"><strong aria-hidden="true">5.</strong> Finding star * imports</a></li><li class="chapter-item expanded "><a href="Porting.html"><strong aria-hidden="true">6.</strong> Using qgis2to3 tool</a></li><li class="chapter-item expanded "><a href="finding_api_v2.html"><strong aria-hidden="true">7.</strong> Refactor api v2 to v3 using qgis2apifinder</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                        
+                    </div>
+
+                    <h1 class="menu-title">Migrating Legacy QGIS2 plugins to v3 API</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        
+                    </div>
+                </div>
+
+                
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="introduction"><a class="header" href="#introduction">Introduction</a></h1>
+<p>Why would one be interested in porting an old QGIS2 plugin to QGIS3? Spin up a new plugin? Use the improved processing framework models for that given workflow?</p>
+<p>on a lighter note, you'd be surprised!!
+<img src="assets/tweet.jpg" alt="tweet image" /></p>
+<p>Before beginning such a journey the need to do so must have risen either from a client's request, or the functionality provided by such a plugin is still not available natively in qgis3 core or core plugins. Maybe the plugin was used to access a private rest API service. Or the individual developer of such plugin haven't updated yet. All the reasons one might site, would trigger the urge to migrate the plugin by themselves. <strong>QGIS3 comes with a tone of fuctionalities provided by default, as opposed to having to install some plugins back in v2; please check first if what you're seeking to achieve available</strong></p>
+<p>From personal experience, I have encountered some organizations still using qgis2.18 because of a custom plugin that was developed for them to suit their daily workflow and is only compatible with v2 API. For instance the <a href="https://github.com/zsiki/ls">Surveying Calculation plugin</a> that was developed by DigiKom and Zanzibar local authorities was developed for v2 to aid in survey and traverse/triangulation network calculation, adjustments, and reductions. It has seen less or rather in active development and is not supported by v3 API or the <a href="https://github.com/hotosm/oam-qgis-plugin">OpenAerialMap Plugin</a> by HOTOSM to access and upload imagery from the open Aerial map platform, unfortunately the development was halted and is not maintained at the moment <a href="https://github.com/yojiyojiyoji/oam_qgis3_express">try this repo</a>.</p>
+<p>such plugins could have been part of your daily workflow pipelines as an individual or an org as a whole. So would you rather stick to legacy QGIS version or upgrade to feature-rich and improved user experience v3 offers. With plugins, one could play around with some of the semi-automated tools to port your plugin of choice if it is no longer/does not support QGIS3.</p>
+<p>Since the release of QGIS v3, the community has tried to come with guides to help plugin developers to port their code to this version and a few best practices.</p>
+<p>QGIS itself is written in  <code>C++</code>, <code>Qt framework</code> and <code>Python</code> as the main scripting language. There's been myriads of changes within the  <code>QT Framework</code>  official deprecation of  <code>Qt4</code> to <code>Qt5</code>  and   <code>python2</code> <em>End of life</em> and  support early 2020 to <code>python3</code> which is the programming language used to develop plugins and custom scripts in QGIS.</p>
+<p>Qt company recently announced the release of <code>Qt6</code> as well as <code>PySide6(Qt for python)</code> good news to python developers as Qt officially now supports the language, beside develpement of tools like <code>shiboken</code> to bring your C++ code to python side. Well  what does this mean  to QGIS users?
+Your guess is as good as mine. In the near future there'll be an upgrade to this new api probably in QGIS  v4. This would emphasize more on why one might need to update to v3 api since the next migration guide would probably be specific to porting from QGIS3 to QGIS4.</p>
+<p>Some of the significant changes in Qt4 to Qt5 are in the QtGui module which used to host the graphical widgets that was moved to the QtWidgets module. i.e in the v4 API.</p>
+<pre><code class="language-python">from PyQt4.QtGui import (QDialog, QTabWidget, QWidget, QLayout)
+</code></pre>
+<p>to:</p>
+<pre><code class="language-python">from PyQt5.QtWidgets import (QDialog, QTabWidget, QWidget, QLayout)
+</code></pre>
+<p>or Using version independent api provided by qgis modules</p>
+<pre><code class="language-python">from qgis.PyQt.QtWidgets import (QDialog, QTabWidget, QWidget, QLayout)
+</code></pre>
+<h2 id="typical-migration-workflowsteps"><a class="header" href="#typical-migration-workflowsteps">Typical Migration workflow/steps</a></h2>
+<ol>
+<li>Unit tests</li>
+<li>Fixing *(star) imports</li>
+<li>Versioning strategy/ legacy code back up.</li>
+<li>Install the code porting helpers</li>
+<li>Porting <code>Python2 to 3</code> and <code>PyQt4 to PyQt5</code></li>
+<li>Finding/Checking for API v2 usage in the plugin  code base</li>
+</ol>
+<h2 id="useful-links"><a class="header" href="#useful-links">Useful links</a></h2>
+<ul>
+<li><a href="https://github.com/qgis/QGIS/wiki/Plugin-migration-to-QGIS-3">Plugin Migration to QGIS3 wiki</a></li>
+<li><a href="https://github.com/opengisch/qgis2to3">qgis2to3 tool</a> also includes <code>python2to3</code> api tools</li>
+<li><a href="https://github.com/opengisch/qgis2to3/tree/master/qgis2to3/api2finder">qgis2apifinder</a></li>
+<li><a href="https://qgis.org/api/api_break.html">qgis api compatibility</a> Highlights api breaks and backward compatibility between the two versions.</li>
+<li><a href="https://www.opengis.ch/2018/04/13/porting-qgis-plugins-to-api-v3-strategy-and-tools/">opengis.ch porting guideline</a> which this guide is based on, Published by Marco Bernasocchi on 2018-04-13.</li>
+<li><a href="https://www.lutraconsulting.co.uk/blog/2016/06/12/introducing-first-aid-plugin/">First Aid Plugin</a> <a href="https://github.com/wonder-sk/qgis-first-aid-plugin">repo</a> Helps in debugging the plugin, points out the exact line an error has occured.</li>
+<li><a href="https://github.com/borysiasty/plugin_reloader">plugin Reloader</a> More like a &quot;hot reload&quot; tool once you make any changes to your plugin code without have to relaunch qgis instance.</li>
+</ul>
+<h1 id="qgis3-porting"><a class="header" href="#qgis3-porting">QGIS3 Porting</a></h1>
+<p>Now that you are convinced that the quickest way is to continue supporting or using a plugin is to port to the recent supported long term or stable release of QGIS. You should have QGIS plugin dev tools already installed in your system. At the very least you should have
+<code>pyrcc5, pyuic5, git, IDE or text editor, qgis2to3</code> <code>QtDesigner tool</code> to edit you UI forms.
+<strong>Note:</strong> Editing the UI forms might not be necessary when beginning, unless you want to modify the graphical interface of the plugin.</p>
+<p>Spend sometime scheming through the code repository before trying to load it to the QGIS plugin folder. To understand not just the code, file structure but to familiarize. In QGIS2 the default plugin folder was in <code>$HOME/.qgis2</code> which  was changed to <code>$HOME/user/.local/share/QGIS/QGIS3/profiles/default/python/plugins</code>
+for Linux based systems as for my scenario. It is important to note that the plugin folder location differs in other OS such as Windows and OSx.</p>
+<h2 id="getting-the-plugin-code-to-your-local-filesystem"><a class="header" href="#getting-the-plugin-code-to-your-local-filesystem">Getting the plugin code to your local filesystem</a></h2>
+<p>If you are planning to contribute your changes to the main upstream plugin repo then it is advisable to keenly go through their contributing.md guides if there exists any. Follow the usual git workflow. Fork the repository before cloning to your system.</p>
+<pre><code class="language-bash">#Install qgis2to3 helper
+$pip install qgis2to3 --user
+#create your development directory
+$mkdir plugin-dev &amp;&amp; cd plugin-dev
+
+#clone the forked plugin to your local file system
+$git clone https://github.com/koyo-jakanees/oam-qgis-plugin
+$cd oam-qgis-plugin
+
+#fetch from the original repo incase changes might have been made in between
+$git pull upstream
+
+#Investigate the repo structure.
+$tree .  
+
+$cd OpenAerialMap
+
+#Create a symlink to  point to qgis3 plugin folder
+$sudo ln -sr ./ $HOME/.local/share/QGIS/QGIS3/profiles/default/python/plugins/OpenAerialMap
+</code></pre>
+<p>You should now be having a plugin with a symlink/shortcut point to the plugin folder. Let's get our hands dirty and break some things.</p>
+<h1 id="unit-test"><a class="header" href="#unit-test">Unit Test</a></h1>
+<p>Provides a great opportunity to write and refactor your code to follow a TDD process. More often than not we're usually tempted to skip this part. If the plugin skeleton was prepared using the <code>Plugin Builder</code> tool then the plugin folder will have some boiler-plate tests that are auto-generated. But this shouldn't be a reason to add more Unittests for the codebase.</p>
+<p>Some community-driven tools for the QT GUI test include; <code>Qtest</code>, <code>pytest-qt</code> <a href="http://johnnado.com/pyqt-qtest-example/">1</a>, <a href="https://pytest-qt.readthedocs.io/en/latest/tutorial.html">2</a> respectively.
+This comes in handy for future support and a clear outline for a future guideline for new contributors.</p>
+<h1 id="source-code-versioning"><a class="header" href="#source-code-versioning">Source Code Versioning</a></h1>
+<p>Before you start editing the source files of the plugin, it's good practice to branch out the current  <em>main</em> branch to another branch e.g 'Legacy' or 'API v2' off the main. For example:</p>
+<pre><code class="language-bash">$git checkout -b API_V2
+</code></pre>
+<p>Remember the final goal is to have an updated main branch that is compatible with QGIS api3. So go ahead and create a new branch(the one will be using to experiment and port) before merging back to main. Same as before but name the new branch with self-describing name e.g 'upgrade_2_to_v3'.</p>
+<pre><code class="language-bash">$git checkout -b upgrade_2_to_v3
+</code></pre>
+<p>After ensuring the legacy code stays in its branch and now we're working on the feature branch <code>upgrade_2_to_v3</code>, It's time to start fixing the imports in individual python files.</p>
+<h1 id="fixing-up--imports"><a class="header" href="#fixing-up--imports">Fixing up * Imports</a></h1>
+<p>If you have gone through most plugin source files and example scripts found online, you find there are a lot * imports. <a href="https://www.python.org/dev/peps/pep-0008/#imports">PEP8</a> discourages this and can prove to be a pain when refactoring code. It's difficult to know which modules have been used in that namespace of which module does a given method used in the code is imported from.</p>
+<blockquote>
+<p>Wildcard imports  (from <em>module</em> import*) should be avoided, as they make it unclear which names are present in the namespace, confusing both readers and many automated tools. There is one defensible use case for a wildcard import, which is to republish an internal interface as part of a public API   (for example, overwriting a pure Python implementation of an interface with the definitions from an optional accelerator module and exactly which definitions will be overwritten isn't known in advance).</p>
+<p>Imports are always put at the top of the file, just after any module comments and docstrings, and before module globals and constants.
+Imports should be grouped in the following order:</p>
+<ul>
+<li>Standard library imports.</li>
+<li>Related third party imports.</li>
+<li>Local application/library specific imports.</li>
+</ul>
+<p>You should put a blank line between each group of imports.</p>
+</blockquote>
+<p>Linting tools like <code>pylint</code> and <code>autopep8</code> also does not work well with star imports.
+In general avoiding * imports improve the code readability and maintainability by other devs who might be new to that domain.</p>
+<pre><code class="language-python">from PyQt4.QtGui import *
+</code></pre>
+<p>versus</p>
+<pre><code class="language-python">from qgis.PyQt.QtWidgets import QDialog
+</code></pre>
+<p>This indicates which class or function in that module has been used.</p>
+<p>I found this part somewhat challenging since I already knew that GUI items in Qt were moved from the QtGui to QtWidgets module, if you are just starting out, simply follow along with <a href="https://www.opengis.ch/2018/04/13/porting-qgis-plugins-to-api-v3-strategy-and-tools/">opengis guideline</a></p>
+<p>If the Python interpreter complains about a given function call is not within the Module from which it was imported; this often happens with the PyQt5 API. Then a quick search of the class function or method in the documentation should provide an indication from which module it should be imported from. For example A quick search for <code>QDockWidget</code> in Qt5 docs. An understanding of Qt C++ docs is always a plus as you'll have an easy time navigating through the modules and class hierarchy. For instance:</p>
+<p><img src="assets/qtDoc.png" alt="QDockWidget" /></p>
+<p>The top part indicates  <code>Qt 5.15 &gt; QtWidgets &gt; C++ Classes &gt; QDockWidget</code> which in turn in PyQt5 implies that QDockWidget is found in the QtWidgets module, inherits QWidgets properties, and the corresponding import in your plugin should be <code>from qgis.PyQt.QtWidgets import QDockWidget</code> the page also contains info about the properties, types and functons.</p>
+<p>You can use the same approach to understand the QGIS C++ API and class hierarchy.</p>
+<p>One more edit before proceeding to the next section: In  <code>metadata.txt</code> found in the root of your plugin folder change <code>qgisMinimumVersion=3.0</code>. This work through assumes that this port does not cater for backward compatibility within this branch and we'll only be support QGIS3.x versions.</p>
+<h1 id="porting-api-v2-to-api-v3-python-pyqt4-to-pyqt5"><a class="header" href="#porting-api-v2-to-api-v3-python-pyqt4-to-pyqt5">Porting API v2 to API v3 python, PyQt4 to PyQT5</a></h1>
+<p>Assuming you already have the <code>qgis2to3</code> installed in your system and is callable from the Command Line Interface(CLI)</p>
+<pre><code class="language-bash"># check the documentation of the tool and help message
+$qgis2to3 --help
+
+Usage: 2to3 [options] file|dir ...
+
+Options:
+  -h, --help            show this help message and exit
+  -d, --doctests_only   Fix up doctests only
+  -f FIX, --fix=FIX     Each FIX specifies a transformation; default: all
+  -j PROCESSES, --processes=PROCESSES
+                        Run 2to3 concurrently
+  -x NOFIX, --nofix=NOFIX
+                        Prevent a transformation from being run
+  -l, --list-fixes      List available transformations
+  -p, --print-function  Modify the grammar so that print() is a function
+  -v, --verbose         More verbose logging
+  --no-diffs            Don't show diffs of the refactoring
+  -w, --write           Write back modified files
+  -n, --nobackups       Don't write backups for modified files
+  -o OUTPUT_DIR, --output-dir=OUTPUT_DIR
+                        Put output files in this directory instead of
+                        overwriting the input files.  Requires -n.
+  -W, --write-unchanged-files
+                        Also write files even if no changes were required
+                        (useful with --output-dir); implies -w.
+  --add-suffix=ADD_SUFFIX
+                        Append this string to all output filenames. Requires
+                        -n if non-empty.  ex: --add-suffix='3' will generate
+                        .py3 files.
+</code></pre>
+<p>The tool works both with directories and individual files. Invoking or calling the porting help from your terminal or OSGeo4W shell in your plugin folder.</p>
+<pre><code class="language-bash">$qgis2to3 -w /path/plugin/folder
+
+/home/user/.local/bin/qgis2to3 -w /home/user/Documents/osGeoLive/salientrobot-dev/oam-qgis-plugin/OpenAerialMap
+RefactoringTool: Skipping optional fixer: idioms
+RefactoringTool: Skipping optional fixer: ws_comma
+RefactoringTool: Refactored /home/user/Documents/osGeoLive/salientrobot-dev/oam-qgis-plugin/OpenAerialMap/make_package.py
+RefactoringTool: Refactored /home/user/Documents/osGeoLive/salientrobot-dev/oam-qgis-plugin/OpenAerialMap/oam_main.py
+RefactoringTool: Refactored /home/user/Documents/osGeoLive/salientrobot-dev/oam-qgis-plugin/OpenAerialMap/plugin_upload.py
+RefactoringTool: Refactored /home/user/Documents/osGeoLive/salientrobot-dev/oam-qgis-plugin/OpenAerialMap/set_env.py
+RefactoringTool: Refactored /home/user/Documents/osGeoLive/salientrobot-dev/oam-qgis-plugin/OpenAerialMap/backup_files/backup_backup_img_uploader_wizard.py
+--- /home/user/Documents/osGeoLive/salientrobot-dev/oam-qgis-plugin/OpenAerialMap/make_package.py(original)
++++ /home/user/Documents/osGeoLive/salientrobot-dev/oam-qgis-plugin/OpenAerialMap/make_package.py(refactored)
+@@ -1,3 +1,4 @@
++from __future__ import print_function
+ import os, sys
+ 
+ 
+--- /home/user/Documents/osGeoLive/salientrobot-dev/oam-qgis-plugin/OpenAerialMap/oam_main.py(original)
++++ /home/user/Documents/osGeoLive/salientrobot-dev/oam-qgis-plugin/OpenAerialMap/oam_main.py(refactored)
+@@ -22,33 +22,34 @@
+  ***************************************************************************/
+  This script initializes the plugin, making it known to QGIS.
+ &quot;&quot;&quot;
++from __future__ import absolute_import
++from builtins import str
++from builtins import object
+ 
+ # Qt classes
+ # from PyQt4.QtCore import *
+ # from PyQt4.QtGui import *
+ # from qgis.core import *
+ 
+-from PyQt4.QtCore import (QSettings,
+-                          QTranslator,
+-                          qVersion,
+-                          QCoreApplication)
+-from PyQt4.QtGui import (QAction, QIcon)
++from qgis.PyQt.QtCore import QSettings, QTranslator, qVersion, QCoreApplication
++from qgis.PyQt.QtWidgets import QAction
++from qgis.PyQt.QtGui import QIcon
+ 
+ # icon images
+ import resources_rc ......
+ 
+</code></pre>
+<p>The <code>-w</code> option tells the tool to write back the modified files. You'll notice that the tool also adds some python built-in modules e.g <code>from __future__ import print_function</code>
+Don't be scared, this comes about when refactoring <code>py2</code> to <code>py3</code> code.</p>
+<p>This function will also <code>stdout</code> the changes the tool made to each file in <code>git style</code> indicating the changed lines from which v2 API to which corresponding v3 API.
+At this point, if the imports and porting worked out fine you should be able to load the plugin widgets and controls to the <code>QgsInterface</code> instance/session.
+The next steps involve refactoring the API v2 used that the tool could not find a quick fix {Mainly QGIS API which makes the logic/control of the plugin}. Unfortunately, this is the boring part and requires a little bit of patience, don't be hard on yourself you have reached this far.</p>
+<h1 id="finding-api-v2-usages"><a class="header" href="#finding-api-v2-usages">Finding API v2 Usages</a></h1>
+<p>Congratulations on making it this far. There are two useful resources and/or tools that will help you in porting the Qgs API v2 used within the plugin codebase</p>
+<ul>
+<li><a href="https://github.com/opengisch/qgis2to3/tree/master/qgis2to3/api2finder">QGIS2API finder</a> is bundled with qgis2to3 tool and will also be available</li>
+<li><a href="https://qgis.org/api/api_break.html">QGIS API break</a> API documentation details backword incompatible changes.</li>
+</ul>
+<blockquote>
+<p>The API of QGIS libraries is allowed to be changed just between major versions of QGIS. For example, there are various planned backward-incompatible changes between QGIS 1.8 and 2.0 because version 2.0 is a new major version. After a release of a major version of QGIS (e.g. 2.0), the developer team is committed to maintaining stable API for all subsequent minor releases (2.2, 2.4, ...). That roughly means we do not rename classes and methods, remove them nor change their semantics. Existing code should keep working when the user updates QGIS to another minor version (e.g. from 2.0 to 2.2), so all extensions of existing classes should be done in a manner that third party developers do not need to adjust their code to work properly with newer QGIS releases.
+Sometimes, however, we may need to break the API as a result of some code changes. These cases should be only exceptions and they should happen only after consideration and agreement of the development team. Backward incompatible changes with too big impact should be deferred to a major version release.</p>
+<p>This page tries to maintain a list of incompatible changes that happened in previous releases.</p>
+</blockquote>
+<p>Using the <code>qgis2apifinder</code> to find uses of api v2 in the code base and <code>stdout</code> potential required changes for the current version.</p>
+<pre><code class="language-bash">$qgis2apifinder  --all /path/to/plugin/folder
+
+./OpenAerialMap/__init__.py::53: Found name -&gt; ['(class QgsSimpleMarkerSymbolLayer) and setName() have been removed. Use shape() and setShape() instead.']
+./OpenAerialMap/__init__.py::56: Found instance -&gt; ['(class QgsAuthManager) was removed in favor of QgsApplication::authManager() that returns an instance of the Auth Manager']
+./OpenAerialMap/plugin_upload.py::100: Found name -&gt; ['(class QgsSimpleMarkerSymbolLayer) and setName() have been removed. Use shape() and setShape() instead.']
+./OpenAerialMap/plugin_upload.py::115: Found name -&gt; ['(class QgsSimpleMarkerSymbolLayer) and setName() have been removed. Use shape() and setShape() instead.']
+./OpenAerialMap/set_env.py::26: Found map -&gt; ['(class QgsMapCanvas) has been removed because QgsMapCanvasMap is not available in API anymore.']
+./OpenAerialMap/set_env.py::97: Found map -&gt; ['(class QgsMapCanvas) has been removed because QgsMapCanvasMap is not available in API anymore.']
+./OpenAerialMap/oam_main.py::57: Found instance -&gt; ['(class QgsAuthManager) was removed in favor of QgsApplication::authManager() that returns an instance of the Auth Manager']
+./OpenAerialMap/oam_main.py::85: Found actions -&gt; ['(class QgsDataItem) now requires a new QWidget parent argument. Subclasses should ensure that returned items have been']
+./OpenAerialMap/oam_main.py::127: Found normal -&gt; ['(class QgsVector) was removed. Use normalized() instead.']
+./OpenAerialMap/oam_main.py::159: Found actions -&gt; ['(class QgsDataItem) now requires a new QWidget parent argument. Subclasses should ensure that returned items have been']
+</code></pre>
+<p>As you can see from the terminal output the tool schemes through the whole plugin to find v2 API uses and gives out suggestions to the possible changes in v3. This is critical when hunting for these differences and minimizes time spent going through a whole file but jumping straight to the affected lines. Using this tool alongside the QGIS API break wiki to refactor your code further since the output of the tool is only available in the terminal it's a good option to stream it to a file like <code>api2find.log.md</code> for future reference so that you don't have to run the command every time you want to refactor or if in a new terminal session.</p>
+<pre><code class="language-bash">$qgis2apifinder --all /plugin/folder &gt; ./api2find.log.md
+</code></pre>
+<p>If you are planning to maintain the plugin for future migrations keep checking the <a href="https://github.com/qgis/QGIS/wiki/Plugin-migration-to-QGIS-3">Plugin Migration to QGIS3 wiki</a> for updated information and best practices when delving into this path.</p>
+<h2 id="extras"><a class="header" href="#extras">Extras</a></h2>
+<ol>
+<li><strong>CI/CD</strong> <a href="https://github.com/opengisch/qgis-plugin-ci">QGIS plugin CI</a></li>
+<li><strong>Submitting a pull request</strong></li>
+</ol>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        
+
+                        
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
+
+                
+            </nav>
+
+        </div>
+
+        
+
+        
+
+        
+
+        
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        
+
+        
+
+        
+        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+
+        
+        
+        <script type="text/javascript">
+        window.addEventListener('load', function() {
+            window.setTimeout(window.print, 100);
+        });
+        </script>
+        
+        
+
+    </body>
+</html>

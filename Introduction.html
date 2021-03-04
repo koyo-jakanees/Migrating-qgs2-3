@@ -1,0 +1,257 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Introduction - Migrating Legacy QGIS2 plugins to v3 API</title>
+        
+        
+
+
+        <!-- Custom HTML head -->
+        
+
+
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        
+        <link rel="stylesheet" href="fonts/fonts.css">
+        
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+
+        
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="Introduction.html" class="active"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">Getting Started</li><li class="chapter-item expanded "><a href="QGIS3Porting.html"><strong aria-hidden="true">2.</strong> Getting the tools</a></li><li class="chapter-item expanded "><a href="Unit_test.html"><strong aria-hidden="true">3.</strong> Including Tests</a></li><li class="chapter-item expanded "><a href="Versioning_strategy.html"><strong aria-hidden="true">4.</strong> Source code Versioning</a></li><li class="chapter-item expanded affix "><li class="part-title">Refactoring the source code</li><li class="chapter-item expanded "><a href="Fixing_imports.html"><strong aria-hidden="true">5.</strong> Finding star * imports</a></li><li class="chapter-item expanded "><a href="Porting.html"><strong aria-hidden="true">6.</strong> Using qgis2to3 tool</a></li><li class="chapter-item expanded "><a href="finding_api_v2.html"><strong aria-hidden="true">7.</strong> Refactor api v2 to v3 using qgis2apifinder</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                        
+                    </div>
+
+                    <h1 class="menu-title">Migrating Legacy QGIS2 plugins to v3 API</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        
+                    </div>
+                </div>
+
+                
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="introduction"><a class="header" href="#introduction">Introduction</a></h1>
+<p>Why would one be interested in porting an old QGIS2 plugin to QGIS3? Spin up a new plugin? Use the improved processing framework models for that given workflow?</p>
+<p>on a lighter note, you'd be surprised!!
+<img src="assets/tweet.jpg" alt="tweet image" /></p>
+<p>Before beginning such a journey the need to do so must have risen either from a client's request, or the functionality provided by such a plugin is still not available natively in qgis3 core or core plugins. Maybe the plugin was used to access a private rest API service. Or the individual developer of such plugin haven't updated yet. All the reasons one might site, would trigger the urge to migrate the plugin by themselves. <strong>QGIS3 comes with a tone of fuctionalities provided by default, as opposed to having to install some plugins back in v2; please check first if what you're seeking to achieve available</strong></p>
+<p>From personal experience, I have encountered some organizations still using qgis2.18 because of a custom plugin that was developed for them to suit their daily workflow and is only compatible with v2 API. For instance the <a href="https://github.com/zsiki/ls">Surveying Calculation plugin</a> that was developed by DigiKom and Zanzibar local authorities was developed for v2 to aid in survey and traverse/triangulation network calculation, adjustments, and reductions. It has seen less or rather in active development and is not supported by v3 API or the <a href="https://github.com/hotosm/oam-qgis-plugin">OpenAerialMap Plugin</a> by HOTOSM to access and upload imagery from the open Aerial map platform, unfortunately the development was halted and is not maintained at the moment <a href="https://github.com/yojiyojiyoji/oam_qgis3_express">try this repo</a>.</p>
+<p>such plugins could have been part of your daily workflow pipelines as an individual or an org as a whole. So would you rather stick to legacy QGIS version or upgrade to feature-rich and improved user experience v3 offers. With plugins, one could play around with some of the semi-automated tools to port your plugin of choice if it is no longer/does not support QGIS3.</p>
+<p>Since the release of QGIS v3, the community has tried to come with guides to help plugin developers to port their code to this version and a few best practices.</p>
+<p>QGIS itself is written in  <code>C++</code>, <code>Qt framework</code> and <code>Python</code> as the main scripting language. There's been myriads of changes within the  <code>QT Framework</code>  official deprecation of  <code>Qt4</code> to <code>Qt5</code>  and   <code>python2</code> <em>End of life</em> and  support early 2020 to <code>python3</code> which is the programming language used to develop plugins and custom scripts in QGIS.</p>
+<p>Qt company recently announced the release of <code>Qt6</code> as well as <code>PySide6(Qt for python)</code> good news to python developers as Qt officially now supports the language, beside develpement of tools like <code>shiboken</code> to bring your C++ code to python side. Well  what does this mean  to QGIS users?
+Your guess is as good as mine. In the near future there'll be an upgrade to this new api probably in QGIS  v4. This would emphasize more on why one might need to update to v3 api since the next migration guide would probably be specific to porting from QGIS3 to QGIS4.</p>
+<p>Some of the significant changes in Qt4 to Qt5 are in the QtGui module which used to host the graphical widgets that was moved to the QtWidgets module. i.e in the v4 API.</p>
+<pre><code class="language-python">from PyQt4.QtGui import (QDialog, QTabWidget, QWidget, QLayout)
+</code></pre>
+<p>to:</p>
+<pre><code class="language-python">from PyQt5.QtWidgets import (QDialog, QTabWidget, QWidget, QLayout)
+</code></pre>
+<p>or Using version independent api provided by qgis modules</p>
+<pre><code class="language-python">from qgis.PyQt.QtWidgets import (QDialog, QTabWidget, QWidget, QLayout)
+</code></pre>
+<h2 id="typical-migration-workflowsteps"><a class="header" href="#typical-migration-workflowsteps">Typical Migration workflow/steps</a></h2>
+<ol>
+<li>Unit tests</li>
+<li>Fixing *(star) imports</li>
+<li>Versioning strategy/ legacy code back up.</li>
+<li>Install the code porting helpers</li>
+<li>Porting <code>Python2 to 3</code> and <code>PyQt4 to PyQt5</code></li>
+<li>Finding/Checking for API v2 usage in the plugin  code base</li>
+</ol>
+<h2 id="useful-links"><a class="header" href="#useful-links">Useful links</a></h2>
+<ul>
+<li><a href="https://github.com/qgis/QGIS/wiki/Plugin-migration-to-QGIS-3">Plugin Migration to QGIS3 wiki</a></li>
+<li><a href="https://github.com/opengisch/qgis2to3">qgis2to3 tool</a> also includes <code>python2to3</code> api tools</li>
+<li><a href="https://github.com/opengisch/qgis2to3/tree/master/qgis2to3/api2finder">qgis2apifinder</a></li>
+<li><a href="https://qgis.org/api/api_break.html">qgis api compatibility</a> Highlights api breaks and backward compatibility between the two versions.</li>
+<li><a href="https://www.opengis.ch/2018/04/13/porting-qgis-plugins-to-api-v3-strategy-and-tools/">opengis.ch porting guideline</a> which this guide is based on, Published by Marco Bernasocchi on 2018-04-13.</li>
+<li><a href="https://www.lutraconsulting.co.uk/blog/2016/06/12/introducing-first-aid-plugin/">First Aid Plugin</a> <a href="https://github.com/wonder-sk/qgis-first-aid-plugin">repo</a> Helps in debugging the plugin, points out the exact line an error has occured.</li>
+<li><a href="https://github.com/borysiasty/plugin_reloader">plugin Reloader</a> More like a &quot;hot reload&quot; tool once you make any changes to your plugin code without have to relaunch qgis instance.</li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        
+
+                        
+                            <a rel="next" href="QGIS3Porting.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
+
+                
+                    <a rel="next" href="QGIS3Porting.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                
+            </nav>
+
+        </div>
+
+        
+
+        
+
+        
+
+        
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        
+
+        
+
+        
+        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+
+        
+
+    </body>
+</html>
